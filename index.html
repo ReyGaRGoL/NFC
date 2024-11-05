@@ -31,37 +31,20 @@
 
     <script>
         // Verifica si el navegador soporta Web NFC
-        if ('NFC' in window) {
-            console.log("Web NFC está disponible en este dispositivo.");
-        } else {
-            document.getElementById('output').innerHTML = 'API Web NFC no está disponible en este navegador.';
-        }
 
-        // Inicia la lectura NFC cuando el usuario presione el botón
-        document.getElementById('start').addEventListener('click', async () => {
-            try {
-                // Inicia la lectura NFC
-                const nfc = new NFC();
-                await nfc.start();
+        if ('NFCReader' in window) {
+    const reader = new NFCReader();
 
-                // Escucha el evento de lectura de un tag NFC
-                nfc.addEventListener('reading', event => {
-                    const tag = event.tag;
-                    console.log('Tag NFC detectado:', tag);
-                    document.getElementById('output').innerHTML = `
-                        <strong>Tag NFC detectado:</strong><br>
-                        ID: ${tag.id}<br>
-                        Tipo: ${tag.type}<br>
-                        Datos: ${tag.data ? tag.data : 'No hay datos disponibles'}
-                    `;
-                });
-
-                console.log('Esperando un tag NFC...');
-            } catch (err) {
-                console.error("Error al iniciar la lectura NFC:", err);
-                document.getElementById('output').innerHTML = 'Error al intentar leer NFC. Verifica que el dispositivo sea compatible.';
-            }
-        });
+    // Iniciamos el escaneo de la tarjeta NFC
+    reader.scan().then(tag => {
+        // Cuando se lee el tag NFC, puedes acceder a sus datos
+        console.log('Datos de la tarjeta NFC: ', tag);
+    }).catch(error => {
+        console.error('Error al leer la tarjeta NFC:', error);
+    });
+} else {
+    console.log('Web NFC no soportada en este navegador.');
+}
     </script>
 
 </body>
