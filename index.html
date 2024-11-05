@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interacción con NFC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Lectura de NFC</h1>
+    <p>Acerca tu dispositivo NFC a este teléfono para leer un tag NFC.</p>
+    <button id="start">Iniciar lectura NFC</button>
+
+    <div id="output"></div>
+
+    <script>
+        // Verifica si el navegador soporta Web NFC
+        if ('NFC' in window) {
+            console.log("Web NFC está disponible en este dispositivo.");
+        } else {
+            document.getElementById('output').innerHTML = 'API Web NFC no está disponible en este navegador.';
+        }
+
+        // Inicia la lectura NFC cuando el usuario presione el botón
+        document.getElementById('start').addEventListener('click', async () => {
+            try {
+                // Inicia la lectura NFC
+                const nfc = new NFC();
+                await nfc.start();
+
+                // Escucha el evento de lectura de un tag NFC
+                nfc.addEventListener('reading', event => {
+                    const tag = event.tag;
+                    console.log('Tag NFC detectado:', tag);
+                    document.getElementById('output').innerHTML = `
+                        <strong>Tag NFC detectado:</strong><br>
+                        ID: ${tag.id}<br>
+                        Tipo: ${tag.type}<br>
+                        Datos: ${tag.data ? tag.data : 'No hay datos disponibles'}
+                    `;
+                });
+
+                console.log('Esperando un tag NFC...');
+            } catch (err) {
+                console.error("Error al iniciar la lectura NFC:", err);
+                document.getElementById('output').innerHTML = 'Error al intentar leer NFC. Verifica que el dispositivo sea compatible.';
+            }
+        });
+    </script>
+
+</body>
+</html>
